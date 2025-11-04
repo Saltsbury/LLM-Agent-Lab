@@ -14,45 +14,44 @@
 4. 运用Cherry Studio可视化工具构建完整的企业知识库应用
 5. 具备RAG系统部署和维护的基本能力，识别并解决常见问题
 
-## 一、RAG技术基础与环境准备
+## 2.1 RAG环境配置
 
-### 1.1 课程专属环境配置
+### 2.1.1 创建虚拟环境
 ```bash
-# 1. 创建并激活虚拟环境
 python -m venv rag-env
+```
 # Windows: rag-env\Scripts\activate.bat
 # macOS/Linux: source rag-env/bin/activate
 
-# 2. 安装核心依赖包
+```bash
 pip install -U pip
 pip install llama-index==0.10.18 pymilvus==2.4.0 python-dotenv==1.0.0 \
             PyPDF2==3.0.1 python-docx==1.0.0 streamlit==1.31.0 \
             pandas==2.2.0 scikit-learn==1.4.0
+```
 
-# 3. 安装Milvus向量数据库（二进制方式）
-# 下载适合操作系统的安装包
-# Windows: https://github.com/milvus-io/milvus/releases/download/v2.4.0/milvus-standalone-windows-amd64.zip
-# macOS: https://github.com/milvus-io/milvus/releases/download/v2.4.0/milvus-standalone-darwin-amd64.zip
-# Linux: https://github.com/milvus-io/milvus/releases/download/v2.4.0/milvus-standalone-linux-amd64.tar.gz
 
-# 4. 解压并启动Milvus（以Linux为例）
-tar -zxvf milvus-standalone-linux-amd64.tar.gz
-cd milvus-standalone-linux-amd64
-./bin/milvus run standalone
+### 2.1.2 安装Milvus向量数据库
+Windows: https://github.com/milvus-io/milvus/releases/download/v2.4.0/milvus-standalone-windows-amd64.zip
+macOS: https://github.com/milvus-io/milvus/releases/download/v2.4.0/milvus-standalone-darwin-amd64.zip
+Linux: https://github.com/milvus-io/milvus/releases/download/v2.4.0/milvus-standalone-linux-amd64.tar.gz
 
-# 5. 验证Milvus是否启动成功
+### 2.1.3 解压并启动Milvus（以windows为例）
+
+### 2.1.4 验证Milvus是否启动成功
 # 查看日志确认服务状态
 cat logs/standalone/milvus.log | grep "Milvus standalone started successfully"
 
-# 6. 安装Ollama与模型（如未安装）
-# 下载地址：https://ollama.com/download
-# 安装完成后下载模型
+### 2.1.5 安装Ollama与模型（如未安装）
+下载地址：https://ollama.com/download
+
+安装完成后下载模型
 ollama pull llama3:8b
-```
 
-## 二、基础RAG系统构建与高级优化
 
-### 2.1 文档加载与预处理
+## 2.2 基础RAG系统构建与高级优化
+
+### 2.2.1 文档加载与预处理
 创建`1_basic_rag/document_loader.py`:
 ```python
 from llama_index.core import SimpleDirectoryReader, Document
@@ -111,7 +110,7 @@ if __name__ == "__main__":
     print("文档处理结果已保存至 processed_nodes.pkl")
 ```
 
-### 2.2 向量数据库集成
+### 2.2.2 向量数据库集成
 创建`1_basic_rag/vector_db_setup.py`:
 ```python
 from llama_index.core import VectorStoreIndex, StorageContext
@@ -198,9 +197,9 @@ if __name__ == "__main__":
     print("索引配置已保存至 rag_index_storage 目录")
 ```
 
-### 2.3 高级RAG技术应用
+### 2.2.3 高级RAG技术应用
 
-#### 2.3.1 混合检索系统实现
+#### 2.2.3.1 混合检索系统实现
 ```python
 from llama_index.core import VectorStoreIndex, StorageContext
 from llama_index.vector_stores.milvus import MilvusVectorStore
@@ -274,7 +273,7 @@ def build_hybrid_rag_system():
     return index
 ```
 
-#### 2.3.2 性能优化策略
+#### 2.2.3.2 性能优化策略
 1. **异步查询实现**：
 ```python
 async def batch_query(self, queries: list) -> list:
@@ -292,9 +291,9 @@ index_params_list = [
 ]
 ```
 
-## 三、使用Cherry Studio构建企业知识库
+## 2.3 使用Cherry Studio构建知识库
 
-### 3.1 Cherry Studio知识库功能概述
+### 2.3.1 Cherry Studio知识库功能概述
 
 Cherry Studio提供了完整的知识库管理功能，支持从文档导入、向量化处理到检索优化的全流程可视化操作。根据[官方文档](https://docs.cherry-ai.com/knowledge-base/knowledge-base)，其核心功能包括：
 
@@ -304,9 +303,15 @@ Cherry Studio提供了完整的知识库管理功能，支持从文档导入、�
 - **检索策略配置**：灵活调整检索参数和相似度阈值
 - **知识库测试**：内置查询测试和结果分析工具
 
-### 3.2 知识库创建与配置
+拓展资源：
+- **Cherry Studio官方文档**：https://docs.cherry-ai.com/knowledge-base/knowledge-base
+- **知识库最佳实践**：https://docs.cherry-ai.com/knowledge-base/best-practices
+- **高级检索策略**：https://docs.cherry-ai.com/knowledge-base/advanced-retrieval
+- **性能优化指南**：https://docs.cherry-ai.com/knowledge-base/performance-tuning
 
-#### 步骤1：创建新知识库
+### 2.3.2 知识库创建与配置
+
+#### 2.3.2.1 创建新知识库
 1. 启动Cherry Studio，进入"知识库"模块
 2. 点击"新建知识库"，填写基本信息：
    - 名称：企业知识库
@@ -315,7 +320,7 @@ Cherry Studio提供了完整的知识库管理功能，支持从文档导入、�
    - 向量数据库：Milvus（已在环境准备中配置）
 3. 点击"创建"，系统将初始化知识库结构
 
-#### 步骤2：配置知识库参数
+#### 2.3.2.2 配置知识库参数
 1. 进入知识库详情页，切换到"设置"标签
 2. 配置文档处理参数：
    ```json
@@ -332,9 +337,9 @@ Cherry Studio提供了完整的知识库管理功能，支持从文档导入、�
    - 设备：自动
 4. 点击"保存配置"并应用
 
-### 3.3 文档导入与管理
+### 2.3.3 文档导入与管理
 
-#### 步骤1：导入文档
+#### 2.3.3.1 导入文档
 1. 进入"文档管理"标签，点击"导入文档"
 2. 选择导入方式：
    - 方式1：本地上传（支持多文件批量上传）
@@ -342,7 +347,7 @@ Cherry Studio提供了完整的知识库管理功能，支持从文档导入、�
 3. 选择测试文档（可使用课程提供的sample_docs.zip）
 4. 点击"开始导入"，系统将自动处理文档
 
-#### 步骤2：文档处理监控
+#### 2.3.3.2 文档处理监控
 1. 导入过程中，可在"任务中心"查看处理进度
 2. 处理完成后，查看文档统计信息：
    - 总文档数：X个
@@ -350,9 +355,9 @@ Cherry Studio提供了完整的知识库管理功能，支持从文档导入、�
    - 平均分块大小：Z tokens
 3. 检查是否有处理失败的文档，点击"重试"处理异常文档
 
-### 3.4 检索策略配置
+### 2.3.4 检索策略配置
 
-#### 基础检索配置
+#### 2.3.4.1 基础检索配置
 1. 进入"检索设置"标签，配置基础参数：
    - 相似度阈值：0.75
    - 返回结果数：5
@@ -360,7 +365,7 @@ Cherry Studio提供了完整的知识库管理功能，支持从文档导入、�
 2. 点击"测试检索"，输入测试查询："企业核心产品有哪些？"
 3. 查看检索结果和相关性评分，调整参数优化结果
 
-#### 高级检索策略（混合检索配置）
+#### 2.3.4.2 高级检索策略（混合检索配置）
 1. 在"检索设置"中启用"混合检索"
 2. 配置参数：
    - 密集向量权重：0.7
@@ -369,9 +374,9 @@ Cherry Studio提供了完整的知识库管理功能，支持从文档导入、�
 3. 点击"保存并应用"，系统将自动重建索引
 4. 对比启用前后的检索效果差异
 
-### 3.5 知识库应用开发
+### 2.3.5 知识库应用开发
 
-#### 创建检索应用
+#### 2.3.5.1 创建检索应用
 1. 进入"应用构建"模块，点击"新建应用"
 2. 选择模板："知识库问答应用"
 3. 配置应用参数：
@@ -381,7 +386,7 @@ Cherry Studio提供了完整的知识库管理功能，支持从文档导入、�
    - 提示词模板：使用RAG专用模板
 4. 点击"创建应用"，系统自动生成应用界面
 
-#### 应用测试与优化
+#### 2.3.5.2 应用测试与优化
 1. 进入应用详情页，点击"预览"
 2. 在测试界面输入问题，测试不同类型查询：
    - 事实型："企业成立时间？"
@@ -393,9 +398,8 @@ Cherry Studio提供了完整的知识库管理功能，支持从文档导入、�
    - 优化提示词模板
    - 调整检索策略
 
-### 3.6 知识库维护与更新
+### 2.3.6 知识库自动更新
 
-#### 定期更新机制
 1. 进入知识库"设置"→"自动更新"
 2. 配置更新策略：
    - 更新频率：每周日凌晨2点
@@ -403,14 +407,7 @@ Cherry Studio提供了完整的知识库管理功能，支持从文档导入、�
    - 通知方式：邮件通知
 3. 点击"启用自动更新"
 
-#### 性能监控
-1. 进入"监控中心"，查看关键指标：
-   - 检索响应时间
-   - 准确率评分
-   - 文档覆盖率
-2. 设置告警阈值，当指标异常时接收通知
-
-### 3.7 常见问题与解决方案（基于官方文档）
+### 2.3.7 常见问题与解决方案
 
 #### 文档导入失败
 **问题**：PDF文档导入后内容为空  
@@ -433,9 +430,9 @@ Cherry Studio提供了完整的知识库管理功能，支持从文档导入、�
 2. 配置"自动归档"策略，将旧文档移至归档库
 3. 优化索引参数，使用IVF_FLAT索引类型
 
-## 四、RAG提示词工程
+## 2.4 RAG提示词工程
 
-### 4.1 检索增强提示结构
+### 2.4.1 检索增强提示结构
 ```markdown
 # 系统角色
 你是企业知识库问答专家，使用提供的检索结果回答问题。
@@ -451,7 +448,7 @@ Cherry Studio提供了完整的知识库管理功能，支持从文档导入、�
 **检索建议**：[如果信息不足，建议补充的检索关键词]
 ```
 
-### 4.2 提示词优化技巧
+### 2.4.2 提示词优化技巧
 1. **指定回答风格**：
 ```markdown
 # 回答风格
@@ -470,12 +467,12 @@ Cherry Studio提供了完整的知识库管理功能，支持从文档导入、�
 4. 综合两次结果回答
 ```
 
-## 五、课程作业：企业知识库系统开发
+## 2.5 课程作业：企业知识库系统开发
 
-### 作业目标
+### 2.5.1 作业目标
 使用Cherry Studio构建一个完整的企业知识库系统，实现文档管理、智能检索和问答功能。
 
-### 具体要求
+### 2.5.2 具体要求
 1. **知识库构建**：
    - 导入至少10篇不同类型的企业文档
    - 配置混合检索策略
@@ -497,9 +494,3 @@ Cherry Studio提供了完整的知识库管理功能，支持从文档导入、�
 - 5组测试查询的问答记录
 - 优化前后的性能对比报告
 - 技术总结（500字以内）
-
-## 扩展学习资源
-- **Cherry Studio官方文档**：https://docs.cherry-ai.com/knowledge-base/knowledge-base
-- **知识库最佳实践**：https://docs.cherry-ai.com/knowledge-base/best-practices
-- **高级检索策略**：https://docs.cherry-ai.com/knowledge-base/advanced-retrieval
-- **性能优化指南**：https://docs.cherry-ai.com/knowledge-base/performance-tuning
