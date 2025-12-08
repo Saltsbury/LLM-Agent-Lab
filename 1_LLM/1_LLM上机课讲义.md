@@ -251,23 +251,23 @@
             print("通义千问API配置失败")
     ```
 
-#### 1.1.1.4 LLM API计费规则
+#### 1.1.1.4 LLM API计费规则（2025年11月更新）
 
-在线LLM API的计费核心是**Token计量**，但不同服务商的Token计算逻辑、计费模式存在显著差异。以下结合主流服务商（深度求索、KIMI、火山引擎、通义千问）的规则展开说明：
+在线LLM API的计费核心是**Token计量**，但不同服务商的Token计算逻辑、计费模式存在差异。以下结合主流服务商（深度求索、KIMI、火山引擎、通义千问）的规则展开说明：
 
 1. Token概念
-    - **定义**：Token是模型处理文本的基本单位，可理解为“语义片段”。例如：
+    - **定义**：在自然语言处理NLP中，Token是模型处理文本的基本单位，可理解为“语义片段”。例如：
         - 英文中，1个Token约等于4个字符（如“hello”为1个Token）；
-        - 中文中，1个Token通常对应1个汉字（但部分服务会按词语拆分，如“人工智能”可能计为1个Token）。
+        - 中文中，1个Token通常对应1个词语或一个汉字，如“中国”可能计为1个Token，而单个汉字"夔"可能会被分解为若干 Token 的组合。大致来说，对于一段通常的中文文本，1 个 Token 大约相当于 1.5-2 个汉字。
     - **影响范围**：Token数量直接决定费用（按Token数计费）和模型处理能力（受上下文窗口限制，如“8k模型”指最大支持8192个Token的输入+输出）。
 
 2. 主流服务商的Token计算与计费差异
 
     | 服务商       | Token计算规则                                                                 | 计费模式                                  | 特殊政策                                                                 |
     |--------------|-----------------------------------------------------------------------------|-----------------------------------------|----------------------------------------------------------------------|
-    | 深度求索Deepseek [计费页](https://api-docs.deepseek.com/zh-cn/quick_start/pricing) | 中文按字符计（1汉字=1 Token），英文按分词计（1单词≈1 Token）；系统提示词和历史对话均计入Token。 | 输入/输出Token分别计费，不同模型单价不同（如`deepseek-chat`输入0.3元/千Token，输出0.6元/千Token）。 | 新用户赠送一定额度免费Token（约50万-100万），过期未使用自动清零。                       |
-    | KIMI（月之暗面）[计费页](https://platform.moonshot.cn/docs/pricing) | 中英文统一按“字符数÷2”估算Token（如1000字符≈500 Token）；长文本处理时支持按实际分词结果精确计量。 | 输入/输出合并计费，`moonshot-v1-8k`模型统一0.3元/千Token，`moonshot-v1-32k`长文本模型单价略高。 | 免费额度每日限量（约10万Token/天），超出部分按阶梯价计费（用量越大单价越低）。            |
-    | 火山方舟/豆包（字节跳动） [计费页](https://www.volcengine.com/docs/82379/1544681)| 中文1汉字=1 Token，英文1单词≈1 Token；上下文窗口内的所有内容（含系统提示、历史消息）均计入。 | 分模型计费，`doubao-pro`输入0.2元/千Token，输出0.4元/千Token；`doubao-lite`单价约为前者的1/3。 | 企业用户可购买套餐包（如100万Token套餐约150元），有效期1年，比按次计费便宜30%。         |
+    | 深度求索Deepseek [计费页](https://api-docs.deepseek.com/zh-cn/quick_start/pricing) | 中文按词语计（1词语=1 Token），英文按分词计（1单词≈1 Token）；系统提示词和历史对话均计入Token。 | 输入/输出Token分别计费，不同模型单价不同（如`deepseek-chat`输入0.3元/千Token，输出0.6元/千Token）。 | 新用户赠送一定额度免费Token（约50万-100万），过期未使用自动清零。                       |
+    | KIMI（月之暗面）[计费页](https://platform.moonshot.cn/docs/pricing/chat) | Chat Completion 接口收费：我们对 Input 和 Output 均实行按量计费，中文按词语计（1词语=1 Token），英文按分词计（1单词≈1 Token）。如果您上传并抽取文档内容，并将抽取的文档内容作为 Input 传输给模型，那么文档内容也将按量计费。文件相关接口（文件内容抽取/文件存储）接口限时免费，即您只上传并抽取文档，这个API本身不会产生费用。| 输入/输出合并计费，`moonshot-v1-8k`模型统一0.3元/千Token，`moonshot-v1-32k`长文本模型单价略高。 | 免费额度每日限量（约10万Token/天），超出部分按阶梯价计费（用量越大单价越低）。            |
+    | 火山方舟/豆包（字节跳动） [计费页](https://www.volcengine.com/docs/82379/1544681)| 中文1词语=1 Token，英文1单词≈1 Token；上下文窗口内的所有内容（含系统提示、历史消息）均计入。 | 分模型计费，`doubao-pro`输入0.2元/千Token，输出0.4元/千Token；`doubao-lite`单价约为前者的1/3。 | 企业用户可购买套餐包（如100万Token套餐约150元），有效期1年，比按次计费便宜30%。         |
     | 通义千问 [计费页](https://help.aliyun.com/zh/model-studio/billing-for-model-studio?spm=5176.29597918.J_etFdgJIDidF3OAYTCTJFS.2.518c7b08zG1O5P)      | 中文1词语=1 Token，英文按BPE分词（1000字符≈300-400 Token）；输入/输出分别计量。         | 按模型档位收费，`qwen-plus`输入0.15元/千Token，输出0.3元/千Token；`qwen-max`单价约为其3倍。 | 阿里云账号实名认证后赠送100万免费Token，有效期3个月，仅支持基础模型。                   |
 
 
@@ -283,8 +283,6 @@
     3. **免费额度限制**  
         - 免费Token通常仅支持基础模型，且有调用频率限制（如Deepseek每秒最多5次调用）；  
         - 商用场景需提前升级账号，避免因额度耗尽导致服务中断。
-
-> 注：以上计费信息为2025年11月整理，具体以各服务商官方最新文档为准。
 
 #### 1.1.1.5 四家服务商在线API比较
 
@@ -325,14 +323,14 @@
         | v2-open-70B（开源）| 0.20               | 0.40                   | 100元（省33%）           | 新用户80万Token（60天） |
         | mini-1.8B（开源） | 0.05                   | 0.10                   | 25元（省33%）            | 每日20万Token（不限期） |
 
-    - 模型特色（重点：开源模型逼近闭源）
-        - **长文本处理绝对优势**：512k上下文窗口支持“一次性解析百万字文本”，无需分段处理，在法律合同、学术论文、小说分析场景中效率远超同类模型（多数竞品最大窗口为128k）。
+    - 模型特色
+        - **长文本处理优势**：512k上下文窗口支持“一次性解析百万字文本”，无需分段处理，在法律合同、学术论文、小说分析场景中效率远超同类模型（多数竞品最大窗口为128k）。
         - **开源模型性能突破**：
             - **moonshot-v2-open-70B**：在2025年10月Hugging Face Open LLM Leaderboard中，MMLU得分85.7（闭源模型GPT-4o-mini为88.2，豆包pro为86.3），C-Eval（中文综合能力）得分91.2（超过GPT-4o-mini的89.5），推理、逻辑、中文理解能力已逼近主流闭源模型。
             - **核心优势**：支持128k长上下文，在线API调用成本仅为闭源模型的57%（v2-open-70B输入0.2元/千Token vs v2-pro 0.35元/千Token），且开源可商用（协议宽松，支持企业二次开发）。
         - **多轮对话一致性强**：针对长对话优化，连续50+轮交互不丢失上下文，适合智能助手、虚拟客服等场景。
 
-3. 火山方舟（字节跳动）：多模态+企业级“生态型”模型
+3. 火山方舟（字节跳动）
     - 在线API模型
         | 模型名称               | 上下文窗口 | 核心定位                  | 适用场景                          |
         |------------------------|------------|---------------------------|-----------------------------------|
@@ -354,7 +352,7 @@
         - **企业级服务优势**：提供私有化部署、数据隔离、定制训练服务，适配金融、政务等敏感行业，支持SLA保障（可用性99.99%）。
         - **生态整合强**：无缝对接火山引擎的云服务器、存储、CDN等产品，适合需要全链路技术支持的企业用户。
 
-4. 通义千问（阿里）：阿里云生态+高性能“通用型”模型
+4. 通义千问（阿里云）
     - 核心在线API模型矩阵
         | 模型名称               | 上下文窗口 | 核心定位                  | 适用场景                          |
         |------------------------|------------|---------------------------|-----------------------------------|
@@ -385,7 +383,6 @@
 | 最大上下文窗口      | 64k（代码模型）            | 512k（v2-max）             | 128k（doubao-max-2）       | 128k（qwen-max-turbo）     |
 | 开源模型支持（在线API） | 无                        | 有（v2-open-70B/mini-1.8B） | 无                        | 无                        |
 | 多模态能力          | 图文理解                   | 文本为主（支持长文本OCR）   | 图文/语音/生成一体化       | 图文理解+生成             |
-| 性价比（千Token成本）| 中高（代码模型偏贵）       | 高（开源模型成本低）       | 中（企业套餐优惠大）       | 中低（基础模型便宜）       |
 | 免费额度            | 新用户50万Token（30天）    | 每日10万Token（不限期）    | 每日30万Token（lite模型）  | 实名认证100万Token（90天） |
 | 适用场景            | 程序员、科研人员           | 长文本处理、成本敏感用户   | 企业级多模态、敏感行业     | 阿里云生态用户、通用场景   |
 
@@ -671,43 +668,43 @@ Cherry Studio是一款低代码开发平台，专为集成大语言模型（LLM�
 
 1. **工具启动**：打开Cherry Studio，进入「模型管理」→「添加模型」→「在线API」。
 
-2. **分服务商配置步骤**：
+2. **配置服务商**：
    1. Deepseek（深度求索）配置
-   - 模型名称：自定义（如“Deepseek-chat”）
-   - API类型：Chat Completions（OpenAI兼容）
-   - 接口地址：`https://api.deepseek.com/v1/chat/completions`
-   - 认证方式：Bearer Token
-   - Token：粘贴环境变量中的`DEEPSEEK_API_KEY`
-   - 默认模型：选择`deepseek-chat`（或其他需使用的模型）
-   - 点击「测试连接」，显示“连接成功”即可保存。
+    - 模型名称：自定义（如“Deepseek-chat”）
+    - API类型：Chat Completions（OpenAI兼容）
+    - 接口地址：`https://api.deepseek.com/v1/chat/completions`
+    - 认证方式：Bearer Token
+    - Token：粘贴环境变量中的`DEEPSEEK_API_KEY`
+    - 默认模型：选择`deepseek-chat`（或其他需使用的模型）
+    - 点击「测试连接」，显示“连接成功”即可保存。
 
    2. KIMI（月之暗面）配置
-   - 模型名称：自定义（如“KIMI-v2-pro”）
-   - API类型：Chat Completions（OpenAI兼容）
-   - 接口地址：`https://api.moonshot.cn/v1/chat/completions`
-   - 认证方式：Bearer Token
-   - Token：粘贴环境变量中的`KIMI_API_KEY`
-   - 默认模型：选择`moonshot-v1-8k`（或`moonshot-v2-pro`）
-   - 点击「测试连接」，保存配置。
+    - 模型名称：自定义（如“KIMI-v2-pro”）
+    - API类型：Chat Completions（OpenAI兼容）
+    - 接口地址：`https://api.moonshot.cn/v1/chat/completions`
+    - 认证方式：Bearer Token
+    - Token：粘贴环境变量中的`KIMI_API_KEY`
+    - 默认模型：选择`moonshot-v1-8k`（或`moonshot-v2-pro`）
+    - 点击「测试连接」，保存配置。
 
    3. 火山方舟（字节跳动）配置
-   - 模型名称：自定义（如“火山豆包-pro”）
-   - API类型：Chat Completions（火山方舟专属）
-   - 接口地址：`https://ark.cn-beijing.volces.com/api/v3/chat/completions`
-   - 认证方式：AccessKey + SecretKey
-   - AccessKey：粘贴`VOLCENGINE_ACCESS_KEY`
-   - SecretKey：粘贴`VOLCENGINE_SECRET_KEY`
-   - 默认模型：选择`doubao-pro`（或`doubao-max-2`）
-   - 点击「测试连接」，保存配置。
+    - 模型名称：自定义（如“火山豆包-pro”）
+    - API类型：Chat Completions（火山方舟专属）
+    - 接口地址：`https://ark.cn-beijing.volces.com/api/v3/chat/completions`
+    - 认证方式：AccessKey + SecretKey
+    - AccessKey：粘贴`VOLCENGINE_ACCESS_KEY`
+    - SecretKey：粘贴`VOLCENGINE_SECRET_KEY`
+    - 默认模型：选择`doubao-pro`（或`doubao-max-2`）
+    - 点击「测试连接」，保存配置。
 
    4. 通义千问（阿里）配置
-   - 模型名称：自定义（如“通义千问-plus”）
-   - API类型：通义千问专属
-   - 接口地址：`https://dashscope.aliyuncs.com/api/v1/services/aigc/text-generation/generation`
-   - 认证方式：Bearer Token
-   - Token：粘贴环境变量中的`DASHSCOPE_API_KEY`
-   - 默认模型：选择`qwen-plus`（或`qwen-lite`）
-   - 点击「测试连接」，保存配置。
+    - 模型名称：自定义（如“通义千问-plus”）
+    - API类型：通义千问专属
+    - 接口地址：`https://dashscope.aliyuncs.com/api/v1/services/aigc/text-generation/generation`
+    - 认证方式：Bearer Token
+    - Token：粘贴环境变量中的`DASHSCOPE_API_KEY`
+    - 默认模型：选择`qwen-plus`（或`qwen-lite`）
+    - 点击「测试连接」，保存配置。
 
 3. **调用操作**：
    - 进入「对话界面」，右上角选择已配置的在线模型（如“KIMI-v2-pro”）；
